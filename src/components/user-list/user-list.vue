@@ -44,9 +44,10 @@
 
 <script>
 import axios from "axios";
+import {getToken} from '@/assets/js/auth'
 export default {
   async created () {
-    const {token} = JSON.parse(window.localStorage.getItem('admin-token'))
+    const token = getToken()
     const res = await axios.get('http://localhost:8888/api/private/v1/users', {
       headers: {
         Authorization: token // 配置请求头携带身份令牌

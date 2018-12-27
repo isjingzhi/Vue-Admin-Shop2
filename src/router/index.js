@@ -1,5 +1,6 @@
 import Vue from 'vue/dist/vue.js';
 import Router from 'vue-router'
+import {getUserInfo} from '@/assets/js/auth';
 import Login from '@/components/login/login' // @ 是 src 路径的别名，webpack 配置的
 import Home from '@/components/home/home'
 import UserList from '@/components/user-list/user-list'
@@ -43,8 +44,7 @@ router.beforeEach((to, from, next) => {
     next()
   } else {
     // 检查 token 令牌;有放行,没有跳转登录页面
-    const token = window.localStorage.getItem('admin-token')
-    if (!token) {
+    if (!getUserInfo()) {
       next({
         name:'login'
       })

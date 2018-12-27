@@ -91,6 +91,7 @@
 </template>
 
 <script>
+import {removeUserInfo} from '@/assets/js/auth'
 export default {
   data() {
     return {};
@@ -104,7 +105,7 @@ export default {
       })
         .then(() => {
           // 1. 确定退出后,删除本地存储
-          window.localStorage.removeItem("admin-token");
+          removeUserInfo()
           // 2. 跳转登录页面
           this.$router.push({
             name: "login"
