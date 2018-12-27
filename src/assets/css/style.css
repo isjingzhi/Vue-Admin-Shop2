@@ -7,3 +7,17 @@ body {
   margin: 0;
   padding: 0;
 }
+
+/* 统一样式 */
+
+.list-breadcrumb {
+  line-height: 3;
+}
+
+.list-search {
+  margin-bottom: 15px;
+}
+
+.list_table {
+  margin-bottom: 15px;
+}
