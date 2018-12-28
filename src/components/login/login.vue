@@ -27,7 +27,6 @@
 
 <script>
 // 引入axios
-import axios from "axios";
 import {saveUserInfo} from '@/assets/js/auth'
 export default {
   data() {
@@ -41,7 +40,7 @@ export default {
   methods: {
     async login() {
       // 1.获取表单数据,进行表单验证
-      const res = await axios.post("http://localhost:8888/api/private/v1/login",this.userForm);
+      const res = await this.$http.post("/login",this.userForm);
       const data = res.data
       console.log(data);
       if (data.meta.status === 200) {
