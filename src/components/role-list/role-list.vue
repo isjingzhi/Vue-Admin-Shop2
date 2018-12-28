@@ -1,22 +1,3 @@
-<template>
-  <div>
-     角色列表
-  </div>
-</template>
-
-<script>
-export default {
-  data() {
-    return {
-
-    }
-  },
-  methods: {
-
-  },
-}
-</script>
-
-<style>
-
-</style>
+<template src="./template.html"></template>
+<script src="./script.js"></script>
+<style src="./style.css"></style>
