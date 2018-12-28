@@ -108,7 +108,8 @@ export default {
         params: {
           // 请求参数，对象会被转换为 k=v&k=v 的格式，然后拼接到请求路径 ? 后面发起请求
           pagenum: page, // 加载的当前页数
-          pagesize: this.pageSize // 加载的数量
+          pagesize: this.pageSize,// 加载的数量
+          query: this.searchText // 根据搜索文本框的内容来搜索
         }
       });
       console.log(res);
@@ -241,7 +242,12 @@ export default {
         this.editFormVisible = false
       });
     },
-    // 
+    // 8. 查询用户
+    async handleSearch () {
+      this.loadUsers(1)
+      // 查询之后清空文本框
+      this.searchText=''
+    }
   }
 };
 // 
