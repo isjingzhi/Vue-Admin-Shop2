@@ -1,0 +1,34 @@
+<div class="user-list-wrap">
+  <el-row>
+    <el-col :span="24">
+      <el-breadcrumb separator-class="el-icon-arrow-right" class="list-breadcrumb">
+        <el-breadcrumb-item :to="{ path: '/' }">首页</el-breadcrumb-item>
+        <el-breadcrumb-item>权限管理</el-breadcrumb-item>
+        <el-breadcrumb-item>权限列表</el-breadcrumb-item>
+      </el-breadcrumb>
+    </el-col>
+  </el-row>
+  <el-table :data="tableData" v-loading="loading" stripe style="width: 100%">
+    <!-- 可自定义绑定的 index 方法=> :index="indexMethod" -->
+    <el-table-column type="index" width="50">
+    </el-table-column>
+    <el-table-column prop="authName" label="权限名称" width="180">
+    </el-table-column>
+    <el-table-column prop="path" label="路径" width="180">
+    </el-table-column>
+    <!-- 层级 -->
+    <el-table-column prop="pid" label="层级">
+      <template slot-scope="item">
+        <!-- 自定义格列:根据业务的需求需要根据后台返回的数据进行渲染试图
+            1. 在表格列中加一个 template 标签，写上 slot-scope="scope" slot-scope="scope" 的值 scope 可以是任何名字，
+            它始终表示当前遍历的作用域对象该作用域对象中有一个属性 row 可以用来获取当前行对象，也就是数组的每一项
+            2. 在 template 中自定义你想要的内容列表
+            我们在 template 里面就可以使用 scope.row 数据成员  
+         -->
+         <span v-if="item.row.level=== '0'">一级</span>
+         <span v-else-if="item.row.level=== '1'">二级</span>
+         <span v-else-if="item.row.level=== '2'">三级</span>
+      </template>
+    </el-table-column>
+  </el-table>
+</div>
