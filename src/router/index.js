@@ -5,7 +5,7 @@ import Login from '@/components/login/login' // @ 是 src 路径的别名，webp
 import Home from '@/components/home/home'
 import UserList from '@/components/user-list/user-list'
 import RoleList from '@/components/role-list/role-list'
-
+import RightsList from '@/components/rights-list/rights-list'
 
 Vue.use(Router)
 // 配置路由及组件
@@ -33,8 +33,12 @@ const router = new Router({
           path: '/roles',
           component: RoleList
         },
+        {
+          name: 'rights-list',
+          path: '/rights',
+          component: RightsList
+        },
       ]
-    
     }
   ]
 })

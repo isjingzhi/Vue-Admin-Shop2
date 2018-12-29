@@ -45,7 +45,7 @@
             </template>
             <el-menu-item-group>
               <el-menu-item index="/roles">角色列表</el-menu-item>
-              <el-menu-item index="2-2">权限列表</el-menu-item>
+              <el-menu-item index="/rights">权限列表</el-menu-item>
             </el-menu-item-group>
           </el-submenu>
           <!-- 分组 3 -->
@@ -130,6 +130,9 @@ export default {
 </script>
 
 <style>
+.el-menu-item-group__title{
+  display: none;
+}
 .container {
   height: 100%;
 }

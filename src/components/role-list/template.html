@@ -11,7 +11,7 @@
   <!-- 搜索和添加用户 -->
   <el-row class="list-search">
     <el-col :span="24">
-      <el-button type="success" plain>添加角色</el-button>
+      <el-button type="success" plain @click="AddFormVisible=true">添加角色</el-button>
     </el-col>
   </el-row>
   <!-- 表格 -->
@@ -90,7 +90,7 @@
         <!-- 删除用户 -->
           <el-button type="danger"
             size="mini"
-          @click="handelDeleteUser(scope.row)">删除
+          @click="handleDeleteRoles(scope.row)">删除
         </el-button>
         <!-- 分配权限 -->
           <el-button 
@@ -100,4 +100,45 @@
         </template>
       </el-table-column>
   </el-table>
+    <!-- 添加用户对话框 -->
+    <el-dialog title="添加角色" :visible.sync="AddFormVisible">
+        <el-form 
+        :model="AddUserForm" 
+        ref="ruleForm" 
+        label-width="100px" 
+        class="demo-ruleForm">
+          <el-form-item label="角色名称" prop="roleName">
+            <el-input v-model="AddUserForm.roleName"></el-input>
+          </el-form-item>
+          <el-form-item label="角色描述" prop="roleDesc">
+            <el-input v-model="AddUserForm.roleDesc"></el-input>
+          </el-form-item>
+        </el-form>
+        <!-- 创建取消按钮 -->
+        <div slot="footer" class="dialog-footer">
+          <el-button @click="AddFormVisible = false">取消</el-button>
+          <el-button type="primary" @click="handleAddRoles()">创建</el-button>
+        </div>
+      </el-dialog>
+       <!--  编辑用户对话框 -->
+      <el-dialog title="编辑角色" :visible.sync="editFormVisible">
+          <el-form 
+          :model="EditRoleForm" 
+          ref="ruleForm" 
+          label-width="100px" 
+          class="demo-ruleForm"
+          >
+            <el-form-item label="角色名称">
+              <el-input v-model="EditRoleForm.roleName"></el-input>
+            </el-form-item>
+            <el-form-item label="角色描述" prop="roleDesc">
+              <el-input v-model="EditRoleForm.roleDesc"></el-input>
+            </el-form-item>
+          </el-form>
+          <!-- 创建取消按钮 -->
+          <div slot="footer" class="dialog-footer">
+            <el-button @click="editFormVisible = false">取消</el-button>
+            <el-button type="primary" @click="handelEditRole()">编辑</el-button>
+          </div>
+        </el-dialog>
 </div>
