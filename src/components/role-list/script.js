@@ -7,6 +7,7 @@ export default {
       tableData: [],
       AddFormVisible: false,
       editFormVisible: false,
+      authRoleDialog: false,
       AddUserForm: {
         roleName: '',
         roleDesc: '',
@@ -15,6 +16,12 @@ export default {
         roleName: '',
         roleDesc: '',
       },
+      treeData: [],
+      treeProps: {
+        children: 'children', // 子节点数组名
+        label: 'authName' // 节点文本属性名
+      },
+      treeCheckedKeys: [],
     }
   },
   methods: {
@@ -112,6 +119,49 @@ export default {
           message: '已取消编辑'
         })
       })
+    },
+    // 5.1 点击授权发送请求渲染数据
+    async handelAuthDialog(role) {
+      const res = await this.$http.get('rights/tree')
+      console.log(res);
+      const {
+        meta,
+        data
+      } = res.data
+      if (meta.status === 200) {
+        this.treeData = data
+
+        // 找到拥有所有权限的 id ,然后赋值给 treeCheckedKeys 让默认节点被选中
+        this.treeCheckedKeys = this.getLevel3(role.children)
+
+        // 开启 tree 对话框
+        this.authRoleDialog = true
+
+      }
+
+    },
+    // 5.2 点击编辑确定授权
+    async handelAuthRole() {
+      // 运用递归来遍历所有
+    },
+
+    // 6. 运用递归来遍历所有返回数据中的 id 并渲染到页面
+    getLevel3(rightList) {
+      // 用来存储三级id
+      const arr = []
+      const f = function (rightList) {
+        rightList.forEach(function (item) {
+          // 如果字段里没有 children 则证明是最后一级节点,然后把id放到数组中
+          if (!item.children) {
+            arr.push(item.id)
+          } else {
+            // 如果有 children 则递归遍历
+            f(item.children)
+          }
+        })
+      }
+      f(rightList)
+      return arr
     }
   }
 }

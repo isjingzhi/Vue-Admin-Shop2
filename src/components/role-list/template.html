@@ -96,6 +96,7 @@
           <el-button 
           type="warning" 
           size="mini"
+          @click="handelAuthDialog(scope.row)"
           >授权</el-button>
         </template>
       </el-table-column>
@@ -139,6 +140,27 @@
           <div slot="footer" class="dialog-footer">
             <el-button @click="editFormVisible = false">取消</el-button>
             <el-button type="primary" @click="handelEditRole()">编辑</el-button>
+          </div>
+        </el-dialog>
+        <!-- ----------------------------------------------------------- -->
+        <!-- 分配权限对话框 -->
+        <el-dialog title="编辑权限" :visible.sync="authRoleDialog">
+          <!-- 树组件内容 
+          1. node-key="id" 用来指定节点的身份表示,这里指的是每一个权限的id,id绑定每一个节点的的属性
+          2.":default-checked-keys" 用啦指定默认选中的的节点,这是一个数组,数组中填充node-key 指定的id,因此就会绑定每一个节点属性  id
+          -->
+          <el-tree
+            :data="treeData"
+            show-checkbox
+            :props="treeProps"
+            node-key="id"
+            default-expand-all
+            :default-checked-keys="treeCheckedKeys"
+            >
+          </el-tree>
+          <div slot="footer" class="dialog-footer">
+            <el-button @click="authRoleDialog = false">取消</el-button>
+            <el-button type="primary" @click="handelAuthRole()">授权</el-button>
           </div>
         </el-dialog>
 </div>
