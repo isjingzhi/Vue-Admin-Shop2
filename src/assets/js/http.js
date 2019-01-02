@@ -1,5 +1,8 @@
 import axios from 'axios'
-import {getToken} from './auth'
+import router from '@/router/index'
+import {
+  getToken
+} from './auth'
 // 创建 http 实例,设置基准路径并挂载到 vue 实例中
 const http = axios.create({
   baseURL: "http://localhost:8888/api/private/v1/"
@@ -14,7 +17,7 @@ const http = axios.create({
   判断请求的是否为需要携带 token 的页面, 需要则在请求头上加入token, 不是则直接请求
 */
 http.interceptors.request.use(
-  function(config) {
+  function (config) {
     // 拦截器接收一个参数 config ==> 也就是当前请求的配置对象,当axios发送请求是,必须经过这个对象载发送请求==>之前请求没有发送出去
     // 判断请求的是不是登录接口,不是的话就加入请求头
     if (config.url !== "/login") {
@@ -23,10 +26,40 @@ http.interceptors.request.use(
     }
     // 登录页面,直接请求
     return config;
-  }, function (error) {
+  },
+  function (error) {
     // 请求失败处理
     return Promise.reject(error);
   });
+
+/*
+ * http 响应拦截器
+ *判断响应的数据:针对 "每个接口" 进行权限验证判断.
+ *1.如果返回的状态值是403,则提示用户没有权限执行操作
+ *2.如果用户长时间未操作导致 token 失效或者有人恶意伪造 token,则禁止用户进入页面通过判断返回的状态码401,进行拦截并跳转到登录页面
+ *3. 需要跳转路由,引入路由和token
+ */
+
+http.interceptors.response.use(function (response) {
+  const {
+    meta
+  } = response.data
+  if (meta.status === 403) {
+    window.alert("你没有权限执行该操作")
+  } else if (meta.status === 401) {
+    // 如果用户长时间未操作导致 token 失效或者有人恶意伪造 token
+    // 我们也不允许他进入我的系统界面
+    // 所以我们这里通过对 401 统一拦截跳转到登录页
+    window.alert("登录已过期 ++ 或者token不正确")
+    router.push({
+      name: 'login'
+    })
+  }
+  return response;
+}, function (error) {
+  // Do something with response error
+  return Promise.reject(error);
+});
 /*
 // Vue.js 的插件应该有一个公开方法 install。 这个方法的第一个参数是 Vue 构造器， 第二个参数是一个可选的选项对象：
 // 定义插件扩展 VUE 本身
