@@ -138,10 +138,12 @@ export default {
       // console.log(`当前页: ${val}`);
     },
     // 4. 修改用户状态
-    async handleStateChange(state, user) {
+    async changeState(user) {
       const {
-        id: userId
+        id: userId,
+        mg_state: state
       } = user
+      
       // 拿到用户ID,和 switch 开关选中的状态 state,发起请求
       const res = await this.$http.put(`/users/${userId}/state/${state}`)
       if (res.data.meta.status === 200) {

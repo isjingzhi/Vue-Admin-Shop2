@@ -34,9 +34,10 @@
       -->
       <template slot-scope="scope">
         <!--  scope.row拿到当前遍历对象-->
+        <!-- @change="(val) => {handleStateChange(val,scope.row)}"  -->
         <el-switch 
         v-model="scope.row.mg_state"
-        @change="(val) => {handleStateChange(val,scope.row)}" 
+        @change="changeState(scope.row)"
         active-color="#13ce66" 
         inactive-color="#ff4949">
       </el-switch>
