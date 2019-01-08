@@ -99,7 +99,13 @@ export default {
           trigger: 'blur'
         }]
       },
-    };
+      userRoleDialog: false, // 用户权限对话框 
+      userRoleForm: { // 用户权限表单
+        username: '',
+        rid: -1 // -1 代表没有权限
+      },
+      roleList: []
+    }
   },
   methods: {
     // 1.加载列表
@@ -108,11 +114,11 @@ export default {
         params: {
           // 请求参数，对象会被转换为 k=v&k=v 的格式，然后拼接到请求路径 ? 后面发起请求
           pagenum: page, // 加载的当前页数
-          pagesize: this.pageSize,// 加载的数量
+          pagesize: this.pageSize, // 加载的数量
           query: this.searchText // 根据搜索文本框的内容来搜索
         }
       });
-      console.log(res);
+      // console.log(res);
       const {
         data,
         meta
@@ -143,7 +149,7 @@ export default {
         id: userId,
         mg_state: state
       } = user
-      
+
       // 拿到用户ID,和 switch 开关选中的状态 state,发起请求
       const res = await this.$http.put(`/users/${userId}/state/${state}`)
       if (res.data.meta.status === 200) {
@@ -215,15 +221,17 @@ export default {
       }
     },
     // 7.2 点击按钮编辑发送请求
-    async handelEditUser () {
+    async handelEditUser() {
       // 点击按钮弹窗是否确认编辑
-    
+
       this.$confirm('是否编辑该用户?', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
       }).then(async () => {
-      const {id:userId} = this.EditUserForm
+        const {
+          id: userId
+        } = this.EditUserForm
         const res = await this.$http.put(`users/${userId}`, this.EditUserForm)
         if (res.data.meta.status === 200) {
           this.$message({
@@ -245,11 +253,51 @@ export default {
       });
     },
     // 8. 查询用户
-    async handleSearch () {
+    async handleSearch() {
       this.loadUsers(1)
       // 查询之后清空文本框
-      this.searchText=''
+      this.searchText = ''
+    },
+    // 9.1 动态分配用户权限
+    async handelUserRole(user) {
+      // 发送请求拿到用户id
+      // 发送请求,拿到用户列表
+      const res = await this.$http.get(`/users/${user.id}`)
+      const roleRes = await this.$http.get('/roles')
+      const {
+        meta,
+        data
+      } = res.data
+      if (meta.status === 200 && roleRes.data.meta.status === 200) {
+        // 更新角色列表
+        this.roleList = roleRes.data.data
+        // 更新分配角色表单
+        this.userRoleForm = data
+        // 弹出对话框
+        this.userRoleDialog = true
+      }
+    },
+    // 9.2 编辑用户权限
+    async handelEditUserRole() {
+      // 拿到用户id 和 权限id
+      const {
+        id: userId,
+        rid: roleId
+      } = this.userRoleForm
+      const res = await this.$http.put(`users/${userId}/role`, {
+        rid: roleId
+      })
+      const {
+        meta
+      } = res.data
+      if (meta.status === 200) {
+        this.$message({
+          type: 'success',
+          message: '设置角色成功'
+        })
+        // 关闭对话框
+        this.userRoleDialog = false
+      }
     }
   }
-};
-// 
+}

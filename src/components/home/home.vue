@@ -21,63 +21,23 @@
       <el-aside width="200px" class="aside">
         <!-- 默认打开第几个 -->
         <el-menu
-          :default-openeds="['2']"
           class="el-menu-vertical-demo aside-menu"
           @open="handleOpen"
           @close="handleClose"
           :unique-opened="false"
           :router="true"
         >
-          <el-submenu index="1">
+          <el-submenu v-for="item1 in menuList" :index="item1.path" :key="item1.id">
             <template slot="title">
               <i class="el-icon-message"></i>
-              <span>用户管理</span>
+              <span>{{item1.authName}}</span>
             </template>
             <el-menu-item-group>
-              <el-menu-item index="/users">用户列表</el-menu-item>
-            </el-menu-item-group>
-          </el-submenu>
-          <!-- 分组 2 -->
-          <el-submenu index="2">
-            <template slot="title">
-              <i class="el-icon-menu"></i>
-              <span>权限管理</span>
-            </template>
-            <el-menu-item-group>
-              <el-menu-item index="/roles">角色列表</el-menu-item>
-              <el-menu-item index="/rights">权限列表</el-menu-item>
-            </el-menu-item-group>
-          </el-submenu>
-          <!-- 分组 3 -->
-          <el-submenu index="3">
-            <template slot="title">
-              <i class="el-icon-setting"></i>
-              <span>商品管理</span>
-            </template>
-            <el-menu-item-group>
-              <el-menu-item index="3-1">商品列表</el-menu-item>
-              <el-menu-item index="3-2">分类参数</el-menu-item>
-              <el-menu-item index="3-3">商品分类</el-menu-item>
-            </el-menu-item-group>
-          </el-submenu>
-          <!-- 分组 4 -->
-          <el-submenu index="4">
-            <template slot="title">
-              <i class="el-icon-setting"></i>
-              <span>订单管理</span>
-            </template>
-            <el-menu-item-group>
-              <el-menu-item index="4-1">订单列表</el-menu-item>
-            </el-menu-item-group>
-          </el-submenu>
-          <!-- 分组5 -->
-          <el-submenu index="5">
-            <template slot="title">
-              <i class="el-icon-setting"></i>
-              <span>数据统计</span>
-            </template>
-            <el-menu-item-group>
-              <el-menu-item index="4-1">数据列表</el-menu-item>
+              <el-menu-item
+                v-for="item2 in item1.children"
+                :key="item2.id"
+                :index="item2.path"
+              >{{item2.authName}}</el-menu-item>
             </el-menu-item-group>
           </el-submenu>
         </el-menu>
@@ -91,10 +51,15 @@
 </template>
 
 <script>
-import {removeUserInfo} from '@/assets/js/auth'
+import { removeUserInfo } from "@/assets/js/auth";
 export default {
+  created() {
+    this.loadMenus()
+  },
   data() {
-    return {};
+    return {
+      menuList: []
+    }
   },
   methods: {
     logout() {
@@ -105,32 +70,40 @@ export default {
       })
         .then(() => {
           // 1. 确定退出后,删除本地存储
-          removeUserInfo()
+          removeUserInfo();
           // 2. 跳转登录页面
           this.$router.push({
             name: "login"
-          });
+          })
           this.$message({
             type: "success",
             message: "退出成功!"
-          });
+          })
         })
         .catch(() => {
           // 点击取消的处理
-        });
+        })
     },
     handleOpen(key, keyPath) {
-      console.log(key, keyPath);
+      // console.log(key, keyPath);
     },
     handleClose(key, keyPath) {
-      console.log(key, keyPath);
+      // console.log(key, keyPath);
+    },
+    // 3. 发送请求获取菜单树
+    async loadMenus() {
+      const res = await this.$http.get("/menus")
+      const { data, meta } = res.data
+      if (meta.status === 200) {
+        this.menuList = data
+      }
     }
   }
-};
+}
 </script>
 
 <style>
-.el-menu-item-group__title{
+.el-menu-item-group__title {
   display: none;
 }
 .container {

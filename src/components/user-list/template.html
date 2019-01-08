@@ -13,8 +13,7 @@
   <el-row class="list-search">
     <el-col :span="8">
       <el-input placeholder="请输入内容" v-model="searchText" class="input-with-select">
-        <el-button slot="append" icon="el-icon-search"
-        @click="handleSearch()"></el-button>
+        <el-button slot="append" icon="el-icon-search" @click="handleSearch()"></el-button>
       </el-input>
     </el-col>
     <el-col :span="2">
@@ -35,12 +34,8 @@
       <template slot-scope="scope">
         <!--  scope.row拿到当前遍历对象-->
         <!-- @change="(val) => {handleStateChange(val,scope.row)}"  -->
-        <el-switch 
-        v-model="scope.row.mg_state"
-        @change="changeState(scope.row)"
-        active-color="#13ce66" 
-        inactive-color="#ff4949">
-      </el-switch>
+        <el-switch v-model="scope.row.mg_state" @change="changeState(scope.row)" active-color="#13ce66" inactive-color="#ff4949">
+        </el-switch>
       </template>
     </el-table-column>
 
@@ -48,24 +43,13 @@
     <el-table-column label="操作" width="200">
       <!-- 编辑用户 -->
       <template slot-scope="scope">
-        <el-button 
-        type="primary" 
-        icon="el-icon-edit" 
-        size="mini"
-        @click="handelshowEditForm(scope.row)">
-      </el-button>
-      <!-- 删除用户 -->
-        <el-button type="danger"
-         icon="el-icon-delete"
-          size="mini"
-        @click="handelDeleteUser(scope.row)">
-      </el-button>
-      <!-- 分配权限 -->
-        <el-button 
-        type="warning" 
-        icon="el-icon-check" 
-        size="mini"
-        ></el-button>
+        <el-button type="primary" icon="el-icon-edit" size="mini" @click="handelshowEditForm(scope.row)">
+        </el-button>
+        <!-- 删除用户 -->
+        <el-button type="danger" icon="el-icon-delete" size="mini" @click="handelDeleteUser(scope.row)">
+        </el-button>
+        <!-- 分配权限 -->
+        <el-button type="warning" icon="el-icon-check" size="mini" @click="handelUserRole(scope.row)"></el-button>
       </template>
     </el-table-column>
   </el-table>
@@ -87,12 +71,7 @@
   </div>
   <!-- 4. 添加用户对话框 -->
   <el-dialog title="添加用户" :visible.sync="AddFormVisible">
-    <el-form 
-    :model="AddUserForm" 
-    ref="ruleForm" 
-    label-width="100px" 
-    class="demo-ruleForm"
-    :rules="addUserFormRules">
+    <el-form :model="AddUserForm" ref="ruleForm" label-width="100px" class="demo-ruleForm" :rules="addUserFormRules">
       <el-form-item label="用户名称" prop="username">
         <el-input v-model="AddUserForm.username"></el-input>
       </el-form-item>
@@ -115,27 +94,46 @@
 
   <!-- 7. 编辑用户对话框 -->
   <el-dialog title="编辑用户" :visible.sync="editFormVisible">
-      <el-form 
-      :model="EditUserForm" 
-      ref="ruleForm" 
-      label-width="100px" 
-      class="demo-ruleForm"
-      :rules="EditUserFormRules"
-      >
-        <el-form-item label="用户名称">
-          <el-input v-model="EditUserForm.username" :disabled="true"></el-input>
-        </el-form-item>
-        <el-form-item label="用户邮箱" prop="email">
-          <el-input v-model="EditUserForm.email" type="email"></el-input>
-        </el-form-item>
-        <el-form-item label="用户电话" prop="mobile">
-          <el-input v-model="EditUserForm.mobile"></el-input>
-        </el-form-item>
-      </el-form>
-      <!-- 创建取消按钮 -->
-      <div slot="footer" class="dialog-footer">
-        <el-button @click="editFormVisible = false">取消</el-button>
-        <el-button type="primary" @click="handelEditUser()">编辑</el-button>
-      </div>
-    </el-dialog>
+    <el-form :model="EditUserForm" ref="ruleForm" label-width="100px" class="demo-ruleForm" :rules="EditUserFormRules">
+      <el-form-item label="用户名称">
+        <el-input v-model="EditUserForm.username" :disabled="true"></el-input>
+      </el-form-item>
+      <el-form-item label="用户邮箱" prop="email">
+        <el-input v-model="EditUserForm.email" type="email"></el-input>
+      </el-form-item>
+      <el-form-item label="用户电话" prop="mobile">
+        <el-input v-model="EditUserForm.mobile"></el-input>
+      </el-form-item>
+    </el-form>
+    <!-- 创建取消按钮 -->
+    <div slot="footer" class="dialog-footer">
+      <el-button @click="editFormVisible = false">取消</el-button>
+      <el-button type="primary" @click="handelEditUser()">编辑</el-button>
+    </div>
+  </el-dialog>
+  <!-- 9.权限对话框 -->
+  <el-dialog title="分配角色" :visible.sync="userRoleDialog">
+    <el-form :model="userRoleForm">
+      <el-form-item label="用户" label-width="120px">
+        <el-input v-model="userRoleForm.username" auto-complete="off" :disabled="true"></el-input>
+      </el-form-item>
+      <el-form-item label="角色" label-width="120px">
+        <!--
+          默认选中项取决于 userRoleForm.rid 的值
+          如果 userRoleForm.rid === 某个option的 value ，则该 option 会被自动选中
+          el-option 的 label 是 option 的文本
+          value 就是 option 的 value
+          如果 userRoleForm.rid === 某个 option 的 value（角色id），则该 option 被选中
+         -->
+        <el-select v-model="userRoleForm.rid" placeholder="请选择">
+          <el-option v-for="item in roleList" :key="item.id" :label="item.roleName" :value="item.id">
+          </el-option>
+        </el-select>
+      </el-form-item>
+    </el-form>
+    <div slot="footer" class="dialog-footer">
+      <el-button @click="userRoleDialog = false">取消</el-button>
+      <el-button type="primary" @click="handelEditUserRole()">编辑</el-button>
+    </div>
+  </el-dialog>
 </div>
