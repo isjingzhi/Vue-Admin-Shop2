@@ -6,7 +6,7 @@ import Home from '@/components/home/home'
 import UserList from '@/components/user-list/user-list'
 import RoleList from '@/components/role-list/role-list'
 import RightsList from '@/components/rights-list/rights-list'
-
+import CategoryList from '@/components/category-list/category-list'
 Vue.use(Router)
 // 配置路由及组件
 const router = new Router({
@@ -37,6 +37,11 @@ const router = new Router({
           name: 'rights-list',
           path: '/rights',
           component: RightsList
+        },
+        {
+          name: 'category-list',
+          path: '/categories',
+          component: CategoryList
         },
       ]
     }
