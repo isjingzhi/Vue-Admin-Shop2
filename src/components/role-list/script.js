@@ -29,7 +29,6 @@ export default {
     // 1. 加载列表
     async loadRoles() {
       const res = await this.$http.get("/roles");
-      // console.log(res)
       const { data, meta } = res.data;
       if (meta.status === 200) {
         this.tableData = data;
@@ -125,7 +124,6 @@ export default {
       this.currentRore = role;
 
       const res = await this.$http.get("rights/tree");
-      console.log(res);
       const { meta, data } = res.data;
       if (meta.status === 200) {
         this.treeData = data;
@@ -177,8 +175,7 @@ export default {
       const res = await this.$http.post(`/roles/${this.currentRore.id}/rights`, {
         rids:rightIds
       })
-      console.log(res);
-      const { data, meta } = res.data
+      const { meta } = res.data
       if (meta.status === 200) {
         // 重新加载角色列表
         this.loadRoles()
@@ -187,6 +184,21 @@ export default {
         this.$message({
           type: 'success',
           message:'授权成功'
+        })
+      }
+    },
+    // 8. 删除用户权限,拿到角色id 和 权限 id进行删除
+    async handleMoveRights (role, right) {
+      const res = await this.$http.delete(`roles/${role.id}/rights/${right.id}`)
+      const { data, meta } = res.data
+      if (meta.status === 200) {
+        // 删除权限之后，服务器把当前角色拥有的最新权限列表返回给我们了
+        // 所以我们刚好就可以使用这个数据重新赋值给我们的当前角色的权限列表就可以了
+        // 删除成功，更新当前角色的最新权限列表
+        role.children = data
+        this.$message({
+          type: 'success',
+          message:'删除权限成功'
         })
       }
     }

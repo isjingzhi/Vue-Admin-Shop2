@@ -29,6 +29,7 @@
            <el-col :span="4">
               <el-tag
                 closable 
+                @close="handleMoveRights(scope.row,item1)"
                 >{{item1.authName}}
             </el-tag>
             <i class="el-icon-arrow-right"></i>
@@ -42,8 +43,10 @@
               <el-col :span="4">
                 <el-tag
                  closable
+                @close="handleMoveRights(scope.row,item2)"
                  type="success" 
                  >{{item2.authName}}
+                 
               </el-tag>
               <i class="el-icon-arrow-right"></i>
               </el-col>
@@ -55,6 +58,7 @@
                     type="danger"
                     v-for="item3 in item2.children"
                     :key="item3.authName"
+                    @close="handleMoveRights(scope.row,item3)"
                     >{{item3.authName}}
                   </el-tag>
                 </el-col>
