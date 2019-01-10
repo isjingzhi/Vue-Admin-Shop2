@@ -1,6 +1,6 @@
 <div class="user-list-wrap">
 
-  <el-table :data="tableData" border>
+  <el-table :data="tableData" border v-loading="loading">
     <!--
       el-table-tree-column
         prop 用来指定使用哪个属性展示节点名
@@ -42,5 +42,8 @@
       </template>
     </el-table-column>
 </el-table>
-  
+  <!-- 分页 -->
+  <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page.sync="currentPage"
+  :page-sizes="[10,20,30]" layout="total, sizes, prev, pager, next, jumper" :total="totalSize">
+</el-pagination>
 </div>

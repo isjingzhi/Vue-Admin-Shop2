@@ -41,7 +41,7 @@ async function main() {
 `)
   ])
 
-  console.log(`Component ${componentName} create success!`)
+  console.log(`Component ${componentName} create successfully!`)
 }
 
 main()
